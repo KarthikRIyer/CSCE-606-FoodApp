@@ -10,6 +10,7 @@ public class Application {
         ControllerProcessor controllerProcessor = new ControllerProcessor(webServer);
         controllerProcessor.process(controller);
         webServer.start();
+        System.out.println("Started application on port: " + webServer.port);
     }
 
 }
