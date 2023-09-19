@@ -1,4 +1,4 @@
-package com.foodapp.annotation;
+package com.foodapp.framework.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

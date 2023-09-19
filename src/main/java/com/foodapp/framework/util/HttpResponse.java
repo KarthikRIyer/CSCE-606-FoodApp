@@ -1,4 +1,4 @@
-package com.foodapp.util;
+package com.foodapp.framework.util;
 
 public class HttpResponse {
     public String responseText;

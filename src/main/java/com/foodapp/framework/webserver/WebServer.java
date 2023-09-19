@@ -1,21 +1,20 @@
-package com.foodapp;
+package com.foodapp.framework.webserver;
 
-import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.InetSocketAddress;
-import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 public class WebServer {
 
     HttpServer httpServer;
-    int port = 8000;
+    int port;
 
-    public WebServer() throws IOException {
-        httpServer = HttpServer.create(new InetSocketAddress(port), 0);
+    public WebServer(Integer port) throws IOException {
+        this.port = Optional.ofNullable(port).orElse(8000);
+        httpServer = HttpServer.create(new InetSocketAddress(this.port), 0);
         httpServer.setExecutor(null);
     }
 
@@ -29,4 +28,7 @@ public class WebServer {
         httpServer.start();
     }
 
+    public int getPort() {
+        return port;
+    }
 }

@@ -1,4 +1,4 @@
-package com.foodapp.util;
+package com.foodapp.framework.util;
 
 public class Constants {
     public static final String CONTENT_TYPE = "Content-Type";

@@ -1,11 +1,12 @@
-package com.foodapp;
+package com.foodapp.framework.controller;
 
-import com.foodapp.annotation.GET;
-import com.foodapp.annotation.POST;
-import com.foodapp.annotation.RequestBody;
-import com.foodapp.annotation.RequestParam;
-import com.foodapp.util.Constants;
-import com.foodapp.util.HttpResponse;
+import com.foodapp.framework.annotation.GET;
+import com.foodapp.framework.annotation.POST;
+import com.foodapp.framework.annotation.RequestBody;
+import com.foodapp.framework.annotation.RequestParam;
+import com.foodapp.framework.util.Constants;
+import com.foodapp.framework.util.HttpResponse;
+import com.foodapp.framework.webserver.WebServer;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;
@@ -16,6 +17,7 @@ import java.lang.reflect.Method;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import static java.util.stream.Collectors.*;
@@ -23,7 +25,7 @@ import static java.util.stream.Collectors.*;
 public class ControllerProcessor {
 
     WebServer webServer;
-
+    Logger logger = Logger.getLogger(ControllerProcessor.class.getName());
     public ControllerProcessor(WebServer webServer) {
         this.webServer = webServer;
     }
@@ -58,6 +60,7 @@ public class ControllerProcessor {
                     }
 
                     assert response != null;
+                    logger.info("Serving " + Constants.GET + " request: " + exchange.getRequestURI().getRawPath() + "?" + exchange.getRequestURI().getRawQuery());
                     handleResponse(response, exchange, Constants.APPLICATION_JSON);
                 });
             } else if (m.isAnnotationPresent(POST.class)) {
@@ -86,6 +89,7 @@ public class ControllerProcessor {
                     }
 
                     assert response != null;
+                    logger.info("Serving " + Constants.POST + " request: " + exchange.getRequestURI().getRawPath() + "?" + exchange.getRequestURI().getRawQuery());
                     handleResponse(response, exchange, Constants.APPLICATION_JSON);
                 });
             }
