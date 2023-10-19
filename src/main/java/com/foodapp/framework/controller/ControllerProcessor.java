@@ -151,7 +151,9 @@ public class ControllerProcessor {
     }
 
     private void handleResponse(HttpResponse response, HttpExchange exchange, String contentType) throws IOException {
-        exchange.getResponseHeaders().set(Constants.CONTENT_TYPE, Optional.ofNullable(contentType).orElse(Constants.APPLICATION_JSON));
+        exchange.getResponseHeaders()
+                .set(Constants.CONTENT_TYPE, Optional.ofNullable(contentType)
+                        .orElse(Constants.APPLICATION_JSON));
         exchange.sendResponseHeaders(response.responseCode, response.responseText.getBytes().length);
         OutputStream outputStream = exchange.getResponseBody();
         outputStream.write(response.responseText.getBytes());
