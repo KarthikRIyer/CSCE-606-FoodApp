@@ -6,6 +6,7 @@ import com.foodapp.framework.annotation.RequestParam;
 import com.foodapp.framework.controller.Controller;
 import com.foodapp.framework.util.HttpResponse;
 import com.foodapp.framework.util.JsonUtil;
+import com.foodapp.model.Dish;
 import com.foodapp.model.Restaurant;
 import com.foodapp.model.User;
 import com.foodapp.service.LoginService;
@@ -46,6 +47,17 @@ public class RestaurantController extends Controller {
         String restaurantImg = restaurantService.getRestaurantImage(restaurantId);
 
         return new HttpResponse(restaurantImg, 200);
+    }
+
+    @GET(path = "/dishes")
+    public HttpResponse getDishes(@RequestParam("restaurantId") String restaurantId,
+                                        @RequestParam("userId") String userId,
+                                        @RequestParam("token") String token) throws JsonProcessingException, SQLException {
+        loginService.validateToken(userId, token);
+
+        List<Dish> dishes = restaurantService.getDishes(restaurantId);
+
+        return new HttpResponse(JsonUtil.toJson(dishes), 200);
     }
 
 }

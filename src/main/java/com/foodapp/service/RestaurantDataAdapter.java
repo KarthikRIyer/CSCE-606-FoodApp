@@ -1,5 +1,6 @@
 package com.foodapp.service;
 
+import com.foodapp.model.Dish;
 import com.foodapp.model.Restaurant;
 
 import java.sql.Connection;
@@ -49,5 +50,22 @@ public class RestaurantDataAdapter {
             return resultSet.getString(1);
         }
         return null;
+    }
+
+    public List<Dish> getDishes(String restaurantId) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("select * from MENU where restaurant_id = ?");
+        preparedStatement.setString(1, restaurantId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        List<Dish> dishes = new ArrayList<>();
+        while (resultSet.next()) {
+            Dish dish = new Dish();
+            dish.setName(resultSet.getString(1));
+            dish.setDescription(resultSet.getString(2));
+            dish.setPrice(resultSet.getDouble(3));
+            dish.setRestaurantId(resultSet.getInt(4));
+            dish.setDishId(resultSet.getInt(5));
+            dishes.add(dish);
+        }
+        return dishes;
     }
 }

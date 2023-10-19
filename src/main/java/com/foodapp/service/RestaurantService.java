@@ -1,5 +1,6 @@
 package com.foodapp.service;
 
+import com.foodapp.model.Dish;
 import com.foodapp.model.Restaurant;
 
 import java.sql.SQLException;
@@ -24,5 +25,10 @@ public class RestaurantService {
             throw new RuntimeException("Unable to find image!");
         }
         return img;
+    }
+
+    public List<Dish> getDishes(String restaurantId) throws SQLException {
+        List<Dish> dishes = restaurantDataAdapter.getDishes(restaurantId);
+        return dishes;
     }
 }
