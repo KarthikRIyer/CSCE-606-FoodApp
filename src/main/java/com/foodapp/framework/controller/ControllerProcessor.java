@@ -56,7 +56,10 @@ public class ControllerProcessor {
                     try {
                         response = (HttpResponse) m.invoke(controller, paramValues);
                     } catch (IllegalAccessException | InvocationTargetException e) {
-                        handleException(e, exchange);
+                        Throwable exception = e;
+                        if (e instanceof InvocationTargetException)
+                            exception = ((InvocationTargetException) e).getTargetException();
+                        handleException(exception, exchange);
                     }
 
                     assert response != null;
@@ -85,7 +88,10 @@ public class ControllerProcessor {
                     try {
                         response = (HttpResponse) m.invoke(controller, paramValues);
                     } catch (IllegalAccessException | InvocationTargetException e) {
-                        handleException(e, exchange);
+                        Throwable exception = e;
+                        if (e instanceof InvocationTargetException)
+                            exception = ((InvocationTargetException) e).getTargetException();
+                        handleException(exception, exchange);
                     }
 
                     assert response != null;
@@ -140,7 +146,7 @@ public class ControllerProcessor {
         return finalParams;
     }
 
-    private void handleException(Exception e, HttpExchange exchange) throws IOException {
+    private void handleException(Throwable e, HttpExchange exchange) throws IOException {
         e.printStackTrace();
         HttpResponse response = new HttpResponse(e.getMessage(), 500);
         exchange.sendResponseHeaders(response.responseCode, response.responseText.getBytes().length);

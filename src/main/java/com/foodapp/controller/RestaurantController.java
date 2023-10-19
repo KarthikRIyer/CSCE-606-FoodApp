@@ -25,7 +25,7 @@ public class RestaurantController extends Controller {
     }
 
     @GET(path = "/searchRestaurant")
-    public HttpResponse login(@RequestParam("name") String name,
+    public HttpResponse searchRestaurant(@RequestParam("name") String name,
                               @RequestParam("cuisine") String cuisine,
                               @RequestParam("rating") String rating,
                               @RequestParam("userId") String userId,
@@ -35,6 +35,17 @@ public class RestaurantController extends Controller {
         List<Restaurant> restaurants = restaurantService.findRestaurants(name, cuisine, Integer.parseInt(rating));
 
         return new HttpResponse(JsonUtil.toJson(restaurants), 200);
+    }
+
+    @GET(path = "/restaurantImage")
+    public HttpResponse restaurantImage(@RequestParam("restaurantId") String restaurantId,
+                              @RequestParam("userId") String userId,
+                              @RequestParam("token") String token) throws JsonProcessingException, SQLException {
+        loginService.validateToken(userId, token);
+
+        String restaurantImg = restaurantService.getRestaurantImage(restaurantId);
+
+        return new HttpResponse(restaurantImg, 200);
     }
 
 }

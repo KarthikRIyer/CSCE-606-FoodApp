@@ -34,10 +34,20 @@ public class RestaurantDataAdapter {
             restaurant.setRestaurantId(resultSet.getInt(3));
             restaurant.setRating(resultSet.getInt(4));
             restaurant.setCuisine(resultSet.getString(5));
-            restaurant.setImage(resultSet.getString(6));
+//            restaurant.setImage(resultSet.getString(6));
             restaurants.add(restaurant);
         }
 
         return restaurants;
+    }
+
+    public String findRestaurantImage(String restaurantId) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("select image from RESTAURANT where restaurant_id = ?");
+        preparedStatement.setString(1, restaurantId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()) {
+            return resultSet.getString(1);
+        }
+        return null;
     }
 }
