@@ -28,4 +28,10 @@ public class LoginService {
         return user;
     }
 
+    public void validateToken(String userId, String token) throws SQLException {
+        User user = loginDataAdapter.getUserWithToken(userId, token);
+        if (Objects.isNull(user)) {
+            throw new RuntimeException("Token authentication failed!");
+        }
+    }
 }

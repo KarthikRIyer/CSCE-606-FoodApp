@@ -1,11 +1,14 @@
 package com.foodapp;
 
 import com.foodapp.controller.LoginController;
+import com.foodapp.controller.RestaurantController;
 import com.foodapp.framework.controller.Controller;
 import com.foodapp.framework.controller.ControllerProcessor;
 import com.foodapp.framework.webserver.WebServer;
 import com.foodapp.service.LoginDataAdapter;
 import com.foodapp.service.LoginService;
+import com.foodapp.service.RestaurantDataAdapter;
+import com.foodapp.service.RestaurantService;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -31,6 +34,10 @@ public class Application {
     private LoginDataAdapter loginDataAdapter;
     private LoginService loginService;
 
+    private RestaurantController restaurantController;
+    private RestaurantDataAdapter restaurantDataAdapter;
+    private RestaurantService restaurantService;
+
     public static void initApp(String[] args) throws SQLException, IOException {
         if (Objects.isNull(instance)) {
             instance = new Application(args);
@@ -49,11 +56,15 @@ public class Application {
         connection = DriverManager.getConnection(url);
         loginDataAdapter = new LoginDataAdapter(connection);
         loginService = new LoginService(loginDataAdapter);
+        restaurantDataAdapter = new RestaurantDataAdapter(connection);
+        restaurantService = new RestaurantService(restaurantDataAdapter);
 
         controllerProcessor = new ControllerProcessor(webServer);
 
         loginController = new LoginController(loginService);
+        restaurantController = new RestaurantController(restaurantService, loginService);
         controllerProcessor.process(loginController);
+        controllerProcessor.process(restaurantController);
     }
 
     public void init() {

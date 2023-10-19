@@ -1,0 +1,10 @@
+[
+    {
+        "name": "McDonald's",
+        "address": "College Station",
+        "restaurantId": 1,
+        "rating": 4,
+        "cuisine": "Fast Food",
+        "image": "data:image/jpeg;base64,/9j/4AAQ...."
+    }
+]
