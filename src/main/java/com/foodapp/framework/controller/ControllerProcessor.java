@@ -149,20 +149,22 @@ public class ControllerProcessor {
     private void handleException(Throwable e, HttpExchange exchange) throws IOException {
         e.printStackTrace();
         HttpResponse response = new HttpResponse(e.getMessage(), 500);
-        exchange.sendResponseHeaders(response.responseCode, response.responseText.getBytes().length);
+        String responseText = Optional.ofNullable(response.responseText).orElse("");
+        exchange.sendResponseHeaders(response.responseCode, responseText.getBytes().length);
         OutputStream outputStream = exchange.getResponseBody();
-        outputStream.write(response.responseText.getBytes());
+        outputStream.write(responseText.getBytes());
         outputStream.flush();
         exchange.close();
     }
 
     private void handleResponse(HttpResponse response, HttpExchange exchange, String contentType) throws IOException {
+        String responseText = Optional.ofNullable(response.responseText).orElse("");
         exchange.getResponseHeaders()
                 .set(Constants.CONTENT_TYPE, Optional.ofNullable(contentType)
                         .orElse(Constants.APPLICATION_JSON));
-        exchange.sendResponseHeaders(response.responseCode, response.responseText.getBytes().length);
+        exchange.sendResponseHeaders(response.responseCode, responseText.getBytes().length);
         OutputStream outputStream = exchange.getResponseBody();
-        outputStream.write(response.responseText.getBytes());
+        outputStream.write(responseText.getBytes());
         outputStream.flush();
         exchange.close();
     }
