@@ -88,4 +88,8 @@ public class RestaurantService {
     public List<Order> findRestaurantOrders(int restaurantId) throws SQLException {
         return restaurantDataAdapter.findOrdersByRestaurantId(restaurantId);
     }
+
+    public void orderPrepared(int orderId) throws SQLException {
+        restaurantDataAdapter.updateOrderStatus(orderId, OrderStatus.READY);
+    }
 }
