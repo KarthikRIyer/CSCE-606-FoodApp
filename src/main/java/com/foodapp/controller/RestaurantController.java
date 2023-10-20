@@ -59,7 +59,7 @@ public class RestaurantController extends Controller {
                                         @RequestParam("token") String token) throws JsonProcessingException, SQLException {
         loginService.validateToken(userId, token);
 
-        List<Dish> dishes = restaurantService.getDishes(restaurantId);
+        List<Dish> dishes = restaurantService.getDishes(Integer.parseInt(restaurantId));
 
         return new HttpResponse(JsonUtil.toJson(dishes), 200);
     }

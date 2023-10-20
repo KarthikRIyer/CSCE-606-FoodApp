@@ -28,7 +28,7 @@ public class RestaurantService {
         return img;
     }
 
-    public List<Dish> getDishes(String restaurantId) throws SQLException {
+    public List<Dish> getDishes(int restaurantId) throws SQLException {
         List<Dish> dishes = restaurantDataAdapter.getDishes(restaurantId);
         return dishes;
     }

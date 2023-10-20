@@ -53,9 +53,9 @@ public class RestaurantDataAdapter {
         return null;
     }
 
-    public List<Dish> getDishes(String restaurantId) throws SQLException {
+    public List<Dish> getDishes(int restaurantId) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("select * from MENU where restaurant_id = ?");
-        preparedStatement.setString(1, restaurantId);
+        preparedStatement.setInt(1, restaurantId);
         ResultSet resultSet = preparedStatement.executeQuery();
         List<Dish> dishes = new ArrayList<>();
         while (resultSet.next()) {
