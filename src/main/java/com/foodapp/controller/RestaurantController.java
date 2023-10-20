@@ -119,4 +119,13 @@ public class RestaurantController extends Controller {
         return new HttpResponse("Dish created", 200);
     }
 
+    @GET(path = "/restaurantOrders")
+    public HttpResponse restaurantOrders(@RequestParam("restaurantId") String restaurantId,
+                                         @RequestParam("token") String token) throws JsonProcessingException, SQLException {
+        loginService.validateToken(restaurantId, token);
+        List<Order> orders = restaurantService.findRestaurantOrders(Integer.parseInt(restaurantId));
+
+        return new HttpResponse(JsonUtil.toJson(orders), 200);
+    }
+
 }

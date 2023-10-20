@@ -84,4 +84,8 @@ public class RestaurantService {
     public void createDish(CreateDishRequest createDishRequest) throws SQLException {
         restaurantDataAdapter.createDish(createDishRequest);
     }
+
+    public List<Order> findRestaurantOrders(int restaurantId) throws SQLException {
+        return restaurantDataAdapter.findOrdersByRestaurantId(restaurantId);
+    }
 }

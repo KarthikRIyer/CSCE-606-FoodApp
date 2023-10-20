@@ -159,4 +159,41 @@ public class RestaurantDataAdapter {
         int result = createDishStatement.executeUpdate();
         if (result == 0) throw new RuntimeException("Unable to save dish!");
     }
+
+    public List<Order> findOrdersByRestaurantId(int restaurantId) throws SQLException {
+        PreparedStatement orderStatement = connection.prepareStatement("select * from ORDERS where restaurant_id = ?");
+        orderStatement.setInt(1, restaurantId);
+
+        ResultSet resultSet = orderStatement.executeQuery();
+
+        List<Order> orders = new ArrayList<>();
+
+        while (resultSet.next()) {
+            Order order = new Order();
+            order.setOrderId(resultSet.getInt(1));
+            order.setRestaurantId(resultSet.getInt(2));
+            order.setCustomerId(resultSet.getInt(3));
+            order.setDeliveryAgentId(resultSet.getInt(4));
+            order.setAddress(resultSet.getString(5));
+            order.setOrderStatus(OrderStatus.valueOf(resultSet.getString(6)));
+            order.setTotalCost(resultSet.getDouble(7));
+            orders.add(order);
+        }
+
+        PreparedStatement orderItemStatement = connection.prepareStatement("select * from ORDER_ITEMS where order_id = ?");
+
+        for (Order order: orders) {
+            orderItemStatement.setInt(1, order.getOrderId());
+            resultSet = orderItemStatement.executeQuery();
+            List<OrderItem> items = new ArrayList<>();
+            while (resultSet.next()) {
+                OrderItem item = new OrderItem();
+                item.setDishId(resultSet.getInt(2));
+                item.setQuantity(resultSet.getInt(3));
+                items.add(item);
+            }
+            order.setOrderItems(items);
+        }
+        return orders;
+    }
 }
