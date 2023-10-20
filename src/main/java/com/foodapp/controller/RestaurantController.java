@@ -9,7 +9,9 @@ import com.foodapp.framework.controller.Controller;
 import com.foodapp.framework.util.HttpResponse;
 import com.foodapp.framework.util.JsonUtil;
 import com.foodapp.model.*;
+import com.foodapp.model.enums.OrderStatus;
 import com.foodapp.service.LoginService;
+import com.foodapp.service.PaymentService;
 import com.foodapp.service.RestaurantService;
 
 import java.sql.SQLException;
@@ -19,10 +21,12 @@ public class RestaurantController extends Controller {
 
     private RestaurantService restaurantService;
     private LoginService loginService;
+    private PaymentService paymentService;
 
-    public RestaurantController(RestaurantService restaurantService, LoginService loginService) {
+    public RestaurantController(RestaurantService restaurantService, LoginService loginService, PaymentService paymentService) {
         this.restaurantService = restaurantService;
         this.loginService = loginService;
+        this.paymentService = paymentService;
     }
 
     @GET(path = "/searchRestaurant")
@@ -82,6 +86,25 @@ public class RestaurantController extends Controller {
         CreateOrderResponse createOrderResponse = restaurantService.createOrder(createOrderRequest, Integer.parseInt(userId));
 
         return new HttpResponse(JsonUtil.toJson(createOrderResponse), 200);
+    }
+
+    @POST(path = "/payOrder")
+    public HttpResponse payOrder(@RequestBody String paymentRequestStr,
+                                    @RequestParam("userId") String userId,
+                                    @RequestParam("token") String token) throws JsonProcessingException, SQLException {
+        loginService.validateToken(userId, token);
+
+        PaymentRequest paymentRequest = JsonUtil.fromJson(paymentRequestStr, PaymentRequest.class);
+        boolean processed = paymentService.processPayment(paymentRequest);
+
+        if (!processed) {
+            throw new RuntimeException("Could not process payment");
+        }
+
+        restaurantService.updateOrderAddress(paymentRequest.getOrderId(), paymentRequest.getAddress());
+        restaurantService.updateOrderStatus(paymentRequest.getOrderId(), OrderStatus.CONFIRMED);
+
+        return new HttpResponse("Payment processed. Order confirmed!", 200);
     }
 
 }

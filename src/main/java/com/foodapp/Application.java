@@ -5,10 +5,7 @@ import com.foodapp.controller.RestaurantController;
 import com.foodapp.framework.controller.Controller;
 import com.foodapp.framework.controller.ControllerProcessor;
 import com.foodapp.framework.webserver.WebServer;
-import com.foodapp.service.LoginDataAdapter;
-import com.foodapp.service.LoginService;
-import com.foodapp.service.RestaurantDataAdapter;
-import com.foodapp.service.RestaurantService;
+import com.foodapp.service.*;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -33,6 +30,7 @@ public class Application {
     private LoginController loginController;
     private LoginDataAdapter loginDataAdapter;
     private LoginService loginService;
+    private PaymentService paymentService;
 
     private RestaurantController restaurantController;
     private RestaurantDataAdapter restaurantDataAdapter;
@@ -58,11 +56,12 @@ public class Application {
         loginService = new LoginService(loginDataAdapter);
         restaurantDataAdapter = new RestaurantDataAdapter(connection);
         restaurantService = new RestaurantService(restaurantDataAdapter);
+        paymentService = new PaymentService();
 
         controllerProcessor = new ControllerProcessor(webServer);
 
         loginController = new LoginController(loginService);
-        restaurantController = new RestaurantController(restaurantService, loginService);
+        restaurantController = new RestaurantController(restaurantService, loginService, paymentService);
         controllerProcessor.process(loginController);
         controllerProcessor.process(restaurantController);
     }

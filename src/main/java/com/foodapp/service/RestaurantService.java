@@ -72,4 +72,12 @@ public class RestaurantService {
 
         return createOrderResponse;
     }
+
+    public void updateOrderAddress(int orderId, String address) throws SQLException {
+        restaurantDataAdapter.updateOrderAddress(orderId, address);
+    }
+
+    public void updateOrderStatus(int orderId, OrderStatus confirmed) throws SQLException {
+        restaurantDataAdapter.updateOrderStatus(orderId, confirmed);
+    }
 }

@@ -4,6 +4,7 @@ import com.foodapp.model.Dish;
 import com.foodapp.model.Order;
 import com.foodapp.model.OrderItem;
 import com.foodapp.model.Restaurant;
+import com.foodapp.model.enums.OrderStatus;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -133,5 +134,21 @@ public class RestaurantDataAdapter {
         connection.setAutoCommit(true);
 
         return order;
+    }
+
+    public void updateOrderAddress(int orderId, String address) throws SQLException {
+        PreparedStatement updateStatement = connection.prepareStatement("update ORDERS set address=? where order_id = ?");
+        updateStatement.setString(1, address);
+        updateStatement.setInt(2, orderId);
+        int result = updateStatement.executeUpdate();
+        if (result == 0) throw new RuntimeException("Unable to update order address!");
+    }
+
+    public void updateOrderStatus(int orderId, OrderStatus status) throws SQLException {
+        PreparedStatement updateStatement = connection.prepareStatement("update ORDERS set status=? where order_id = ?");
+        updateStatement.setString(1, status.toString());
+        updateStatement.setInt(2, orderId);
+        int result = updateStatement.executeUpdate();
+        if (result == 0) throw new RuntimeException("Unable to update order status!");
     }
 }
