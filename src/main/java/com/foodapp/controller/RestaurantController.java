@@ -129,12 +129,12 @@ public class RestaurantController extends Controller {
     }
 
     @POST(path = "/orderPrepared")
-    public HttpResponse orderPrepared(@RequestParam("restaurantId") String orderId,
+    public HttpResponse orderPrepared(@RequestParam("orderId") String orderId,
                                       @RequestParam("restaurantId") String restaurantId,
                                       @RequestParam("token") String token) throws JsonProcessingException, SQLException {
         loginService.validateToken(restaurantId, token);
         restaurantService.orderPrepared(Integer.parseInt(orderId));
-        return new HttpResponse("Order reade", 200);
+        return new HttpResponse("Order ready", 200);
     }
 
     @GET(path = "/readyOrders")
@@ -145,6 +145,24 @@ public class RestaurantController extends Controller {
         List<Order> orders = restaurantService.findReadyOrders();
 
         return new HttpResponse(JsonUtil.toJson(orders), 200);
+    }
+
+    @POST(path = "/orderPicked")
+    public HttpResponse orderPicked(@RequestParam("orderId") String orderId,
+                                      @RequestParam("userId") String userId,
+                                      @RequestParam("token") String token) throws JsonProcessingException, SQLException {
+        loginService.validateToken(userId, token);
+        restaurantService.orderPicked(Integer.parseInt(orderId));
+        return new HttpResponse("Order picked", 200);
+    }
+
+    @POST(path = "/orderDelivered")
+    public HttpResponse orderDelivered(@RequestParam("orderId") String orderId,
+                                    @RequestParam("userId") String userId,
+                                    @RequestParam("token") String token) throws JsonProcessingException, SQLException {
+        loginService.validateToken(userId, token);
+        restaurantService.orderDelivered(Integer.parseInt(orderId));
+        return new HttpResponse("Order delivered", 200);
     }
 
 }

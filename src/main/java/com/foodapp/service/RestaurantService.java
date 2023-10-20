@@ -96,4 +96,12 @@ public class RestaurantService {
     public List<Order> findReadyOrders() throws SQLException {
         return restaurantDataAdapter.findReadyOrdersByStatus(OrderStatus.READY);
     }
+
+    public void orderPicked(int orderId) throws SQLException {
+        restaurantDataAdapter.updateOrderStatus(orderId, OrderStatus.PICKED_UP);
+    }
+
+    public void orderDelivered(int orderId) throws SQLException {
+        restaurantDataAdapter.updateOrderStatus(orderId, OrderStatus.DELIVERED);
+    }
 }
