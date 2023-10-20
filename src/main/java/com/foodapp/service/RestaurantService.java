@@ -92,4 +92,8 @@ public class RestaurantService {
     public void orderPrepared(int orderId) throws SQLException {
         restaurantDataAdapter.updateOrderStatus(orderId, OrderStatus.READY);
     }
+
+    public List<Order> findReadyOrders() throws SQLException {
+        return restaurantDataAdapter.findReadyOrdersByStatus(OrderStatus.READY);
+    }
 }
