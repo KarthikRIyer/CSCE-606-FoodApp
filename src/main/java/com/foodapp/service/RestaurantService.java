@@ -1,11 +1,12 @@
 package com.foodapp.service;
 
-import com.foodapp.model.Dish;
-import com.foodapp.model.Restaurant;
+import com.foodapp.model.*;
+import com.foodapp.model.enums.OrderStatus;
 
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class RestaurantService {
 
@@ -38,5 +39,37 @@ public class RestaurantService {
             throw new RuntimeException("Unable to find image!");
         }
         return img;
+    }
+
+    public CreateOrderResponse createOrder(CreateOrderRequest createOrderRequest, int userId) throws SQLException {
+        Order order = new Order();
+        List<OrderItem> orderItems = createOrderRequest.getDishes().stream()
+                .map(i -> {
+                    OrderItem orderItem = new OrderItem();
+                    orderItem.setQuantity(i.getQuantity());
+                    orderItem.setDishId(i.getDishId());
+                    return orderItem;
+                }).collect(Collectors.toList());
+        order.setCustomerId(userId);
+        order.setOrderItems(orderItems);
+        order.setOrderStatus(OrderStatus.PENDING);
+        order.setRestaurantId(createOrderRequest.getRestaurantId());
+
+        double totalCost = orderItems.stream().mapToDouble(oi -> {
+            try {
+                return restaurantDataAdapter.getDishPrice(oi.getDishId()) * oi.getQuantity();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }).sum();
+        order.setTotalCost(totalCost);
+
+        order = restaurantDataAdapter.saveOrder(order);
+
+        CreateOrderResponse createOrderResponse = new CreateOrderResponse();
+        createOrderResponse.setOrderId(order.getOrderId());
+        createOrderResponse.setTotalCost(totalCost);
+
+        return createOrderResponse;
     }
 }

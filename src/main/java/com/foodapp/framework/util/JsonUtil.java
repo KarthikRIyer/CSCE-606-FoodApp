@@ -12,4 +12,9 @@ public class JsonUtil {
         return json;
     }
 
+    public static <T> T fromJson(String json, Class<T> clazz) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(json, clazz);
+    }
+
 }

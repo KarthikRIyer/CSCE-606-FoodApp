@@ -2,13 +2,13 @@ package com.foodapp.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.foodapp.framework.annotation.GET;
+import com.foodapp.framework.annotation.POST;
+import com.foodapp.framework.annotation.RequestBody;
 import com.foodapp.framework.annotation.RequestParam;
 import com.foodapp.framework.controller.Controller;
 import com.foodapp.framework.util.HttpResponse;
 import com.foodapp.framework.util.JsonUtil;
-import com.foodapp.model.Dish;
-import com.foodapp.model.Restaurant;
-import com.foodapp.model.User;
+import com.foodapp.model.*;
 import com.foodapp.service.LoginService;
 import com.foodapp.service.RestaurantService;
 
@@ -69,6 +69,19 @@ public class RestaurantController extends Controller {
         String restaurantImg = restaurantService.getDishImage(dishId);
 
         return new HttpResponse(restaurantImg, 200);
+    }
+
+    @POST(path = "/createOrder")
+    public HttpResponse createOrder(@RequestBody String createOrderRequestStr,
+                                  @RequestParam("userId") String userId,
+                                  @RequestParam("token") String token) throws JsonProcessingException, SQLException {
+        loginService.validateToken(userId, token);
+
+        CreateOrderRequest createOrderRequest = JsonUtil.fromJson(createOrderRequestStr, CreateOrderRequest.class);
+
+        CreateOrderResponse createOrderResponse = restaurantService.createOrder(createOrderRequest, Integer.parseInt(userId));
+
+        return new HttpResponse(JsonUtil.toJson(createOrderResponse), 200);
     }
 
 }

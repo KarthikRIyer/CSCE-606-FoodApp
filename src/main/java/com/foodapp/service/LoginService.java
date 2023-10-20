@@ -29,6 +29,11 @@ public class LoginService {
     }
 
     public void validateToken(String userId, String token) throws SQLException {
+        try {
+            Integer.parseInt(userId);
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("Invalid user id format!");
+        }
         User user = loginDataAdapter.getUserWithToken(userId, token);
         if (Objects.isNull(user)) {
             throw new RuntimeException("Token authentication failed!");

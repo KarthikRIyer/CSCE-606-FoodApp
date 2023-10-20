@@ -1,14 +1,14 @@
 package com.foodapp.service;
 
 import com.foodapp.model.Dish;
+import com.foodapp.model.Order;
+import com.foodapp.model.OrderItem;
 import com.foodapp.model.Restaurant;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class RestaurantDataAdapter {
 
@@ -77,5 +77,61 @@ public class RestaurantDataAdapter {
             return resultSet.getString(1);
         }
         return null;
+    }
+
+    public double getDishPrice(int dishId) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("select price from MENU where dish_id = ?");
+        preparedStatement.setInt(1, dishId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()) {
+            return resultSet.getDouble(1);
+        }
+        throw new RuntimeException("Unable to get dish price. Dish ID: " + dishId);
+    }
+
+    public Order saveOrder(Order order) throws SQLException {
+        connection.setAutoCommit(false);
+        PreparedStatement saveStatement = connection.prepareStatement("insert into ORDERS (restaurant_id, customer_id, delivery_agent_id, address, status, total_cost) values (?,?,?,?,?,?)");
+        saveStatement.setInt(1, order.getRestaurantId());
+        saveStatement.setInt(2, order.getCustomerId());
+        saveStatement.setObject(3, order.getDeliveryAgentId());
+        saveStatement.setString(4, order.getAddress());
+        saveStatement.setString(5, order.getOrderStatus().toString());
+        saveStatement.setDouble(6, order.getTotalCost());
+        int result = saveStatement.executeUpdate();
+
+        if (result == 0) {
+            connection.rollback();
+            throw new RuntimeException("Unable to create order!");
+        }
+
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery("select last_insert_rowid()");
+        Integer orderId = null;
+        if (resultSet.next()) {
+            orderId = resultSet.getInt(1);
+        }
+        if (Objects.isNull(orderId)) {
+            connection.rollback();
+            throw new RuntimeException("Unable to create order!");
+        }
+        order.setOrderId(orderId);
+
+        PreparedStatement saveOrderItemStatement = connection.prepareStatement("insert into ORDER_ITEMS (order_id, dish_id, qty) values (?, ?, ?)");
+
+        for (OrderItem orderItem : order.getOrderItems()) {
+            saveOrderItemStatement.setInt(1, orderId);
+            saveOrderItemStatement.setInt(2, orderItem.getDishId());
+            saveOrderItemStatement.setInt(3, orderItem.getQuantity());
+            result = saveOrderItemStatement.executeUpdate();
+            if (result == 0) {
+                connection.rollback();
+                throw new RuntimeException("Unable to create order!");
+            }
+        }
+        connection.commit();
+        connection.setAutoCommit(true);
+
+        return order;
     }
 }
