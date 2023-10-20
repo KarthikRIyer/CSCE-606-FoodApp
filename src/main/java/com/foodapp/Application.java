@@ -1,5 +1,6 @@
 package com.foodapp;
 
+import com.foodapp.controller.CustomerController;
 import com.foodapp.controller.LoginController;
 import com.foodapp.controller.RestaurantController;
 import com.foodapp.framework.controller.Controller;
@@ -36,6 +37,10 @@ public class Application {
     private RestaurantDataAdapter restaurantDataAdapter;
     private RestaurantService restaurantService;
 
+    private CustomerController customerController;
+    private CustomerDataAdapter customerDataAdapter;
+    private CustomerService customerService;
+
     public static void initApp(String[] args) throws SQLException, IOException {
         if (Objects.isNull(instance)) {
             instance = new Application(args);
@@ -57,6 +62,10 @@ public class Application {
         restaurantDataAdapter = new RestaurantDataAdapter(connection);
         restaurantService = new RestaurantService(restaurantDataAdapter);
         paymentService = new PaymentService();
+        customerDataAdapter = new CustomerDataAdapter(connection);
+        customerService = new CustomerService(customerDataAdapter);
+        customerController = new CustomerController(customerService, loginService);
+
 
         controllerProcessor = new ControllerProcessor(webServer);
 
@@ -64,6 +73,7 @@ public class Application {
         restaurantController = new RestaurantController(restaurantService, loginService, paymentService);
         controllerProcessor.process(loginController);
         controllerProcessor.process(restaurantController);
+        controllerProcessor.process(customerController);
     }
 
     public void init() {
