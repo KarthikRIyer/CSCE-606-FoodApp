@@ -1,9 +1,6 @@
 package com.foodapp.service;
 
-import com.foodapp.model.Dish;
-import com.foodapp.model.Order;
-import com.foodapp.model.OrderItem;
-import com.foodapp.model.Restaurant;
+import com.foodapp.model.*;
 import com.foodapp.model.enums.OrderStatus;
 
 import java.sql.*;
@@ -150,5 +147,16 @@ public class RestaurantDataAdapter {
         updateStatement.setInt(2, orderId);
         int result = updateStatement.executeUpdate();
         if (result == 0) throw new RuntimeException("Unable to update order status!");
+    }
+
+    public void createDish(CreateDishRequest createDishRequest) throws SQLException {
+        PreparedStatement createDishStatement = connection.prepareStatement("insert into MENU (dish, desc, price, restaurant_id, image) values (?, ?, ?, ?, ?)");
+        createDishStatement.setString(1, createDishRequest.getDishName());
+        createDishStatement.setString(2, createDishRequest.getDishDesc());
+        createDishStatement.setDouble(3, createDishRequest.getDishPrice());
+        createDishStatement.setInt(4, createDishRequest.getRestaurantId());
+        createDishStatement.setString(5, createDishRequest.getImage());
+        int result = createDishStatement.executeUpdate();
+        if (result == 0) throw new RuntimeException("Unable to save dish!");
     }
 }

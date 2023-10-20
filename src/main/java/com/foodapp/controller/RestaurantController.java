@@ -107,4 +107,16 @@ public class RestaurantController extends Controller {
         return new HttpResponse("Payment processed. Order confirmed!", 200);
     }
 
+    @POST(path = "/createDish")
+    public HttpResponse createDish(@RequestBody String createDishRequestStr,
+                                 @RequestParam("userId") String userId,
+                                 @RequestParam("token") String token) throws JsonProcessingException, SQLException {
+        loginService.validateToken(userId, token);
+
+        CreateDishRequest createDishRequest = JsonUtil.fromJson(createDishRequestStr, CreateDishRequest.class);
+        restaurantService.createDish(createDishRequest);
+
+        return new HttpResponse("Dish created", 200);
+    }
+
 }

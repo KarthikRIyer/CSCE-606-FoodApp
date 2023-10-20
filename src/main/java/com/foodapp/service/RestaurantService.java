@@ -80,4 +80,8 @@ public class RestaurantService {
     public void updateOrderStatus(int orderId, OrderStatus confirmed) throws SQLException {
         restaurantDataAdapter.updateOrderStatus(orderId, confirmed);
     }
+
+    public void createDish(CreateDishRequest createDishRequest) throws SQLException {
+        restaurantDataAdapter.createDish(createDishRequest);
+    }
 }
