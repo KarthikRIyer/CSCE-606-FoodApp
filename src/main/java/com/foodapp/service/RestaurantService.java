@@ -31,4 +31,12 @@ public class RestaurantService {
         List<Dish> dishes = restaurantDataAdapter.getDishes(restaurantId);
         return dishes;
     }
+
+    public String getDishImage(String dishId) throws SQLException {
+        String img = restaurantDataAdapter.findDishImage(dishId);
+        if (Objects.isNull(img)) {
+            throw new RuntimeException("Unable to find image!");
+        }
+        return img;
+    }
 }

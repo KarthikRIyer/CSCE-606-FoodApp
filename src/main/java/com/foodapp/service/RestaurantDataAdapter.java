@@ -68,4 +68,14 @@ public class RestaurantDataAdapter {
         }
         return dishes;
     }
+
+    public String findDishImage(String dishId) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("select image from MENU where dish_id = ?");
+        preparedStatement.setString(1, dishId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()) {
+            return resultSet.getString(1);
+        }
+        return null;
+    }
 }

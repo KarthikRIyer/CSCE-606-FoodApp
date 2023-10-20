@@ -60,4 +60,15 @@ public class RestaurantController extends Controller {
         return new HttpResponse(JsonUtil.toJson(dishes), 200);
     }
 
+    @GET(path = "/dishImage")
+    public HttpResponse dishImage(@RequestParam("dishId") String dishId,
+                                        @RequestParam("userId") String userId,
+                                        @RequestParam("token") String token) throws JsonProcessingException, SQLException {
+        loginService.validateToken(userId, token);
+
+        String restaurantImg = restaurantService.getDishImage(dishId);
+
+        return new HttpResponse(restaurantImg, 200);
+    }
+
 }
