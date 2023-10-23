@@ -16,8 +16,8 @@ public class RestaurantService {
         this.restaurantDataAdapter = restaurantDataAdapter;
     }
 
-    public List<Restaurant> findRestaurants(String name, String cuisine, Integer rating) throws SQLException {
-        return restaurantDataAdapter.findRestaurants(name, cuisine, rating);
+    public List<Restaurant> findRestaurants(String name) throws SQLException {
+        return restaurantDataAdapter.findRestaurantsByName(name);
     }
 
     public String getRestaurantImage(String restaurantId) throws SQLException {
@@ -103,5 +103,13 @@ public class RestaurantService {
 
     public void orderDelivered(int orderId) throws SQLException {
         restaurantDataAdapter.updateOrderStatus(orderId, OrderStatus.DELIVERED);
+    }
+
+    public List<Restaurant> findRestaurantsByCuisine(String cuisine) throws SQLException {
+        return restaurantDataAdapter.findRestaurantsByCuisine(cuisine);
+    }
+
+    public List<Restaurant> findRestaurantsByRating(int rating) throws SQLException {
+        return restaurantDataAdapter.findRestaurantsByRating(rating);
     }
 }

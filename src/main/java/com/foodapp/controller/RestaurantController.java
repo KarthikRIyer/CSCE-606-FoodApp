@@ -29,15 +29,35 @@ public class RestaurantController extends Controller {
         this.paymentService = paymentService;
     }
 
-    @GET(path = "/searchRestaurant")
-    public HttpResponse searchRestaurant(@RequestParam("name") String name,
-                              @RequestParam("cuisine") String cuisine,
-                              @RequestParam("rating") String rating,
+    @GET(path = "/searchRestaurantByName")
+    public HttpResponse searchRestaurantByName(@RequestParam(value = "name") String name,
                               @RequestParam("userId") String userId,
                               @RequestParam("token") String token) throws JsonProcessingException, SQLException {
         loginService.validateToken(userId, token);
 
-        List<Restaurant> restaurants = restaurantService.findRestaurants(name, cuisine, Integer.parseInt(rating));
+        List<Restaurant> restaurants = restaurantService.findRestaurants(name);
+
+        return new HttpResponse(JsonUtil.toJson(restaurants), 200);
+    }
+
+    @GET(path = "/searchRestaurantByCuisine")
+    public HttpResponse searchRestaurantByCuisine(@RequestParam(value = "cuisine") String cuisine,
+                                         @RequestParam("userId") String userId,
+                                         @RequestParam("token") String token) throws JsonProcessingException, SQLException {
+        loginService.validateToken(userId, token);
+
+        List<Restaurant> restaurants = restaurantService.findRestaurantsByCuisine(cuisine);
+
+        return new HttpResponse(JsonUtil.toJson(restaurants), 200);
+    }
+
+    @GET(path = "/searchRestaurantByRating")
+    public HttpResponse searchRestaurantByRating(@RequestParam(value = "rating") String rating,
+                                                  @RequestParam("userId") String userId,
+                                                  @RequestParam("token") String token) throws JsonProcessingException, SQLException {
+        loginService.validateToken(userId, token);
+
+        List<Restaurant> restaurants = restaurantService.findRestaurantsByRating(Integer.parseInt(rating));
 
         return new HttpResponse(JsonUtil.toJson(restaurants), 200);
     }

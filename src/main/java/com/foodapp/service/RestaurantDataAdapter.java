@@ -16,11 +16,9 @@ public class RestaurantDataAdapter {
         this.connection = connection;
     }
 
-    public List<Restaurant> findRestaurants(String name, String cuisine, Integer rating) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("select * from RESTAURANT where name like ? and cuisine like ? and rating = ?");
+    public List<Restaurant> findRestaurantsByName(String name) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("select * from RESTAURANT where name like ?");
         preparedStatement.setString(1, "%" + name + "%");
-        preparedStatement.setString(2, "%" + cuisine + "%");
-        preparedStatement.setInt(3, rating);
 
         ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -34,6 +32,7 @@ public class RestaurantDataAdapter {
             restaurant.setRating(resultSet.getInt(4));
             restaurant.setCuisine(resultSet.getString(5));
 //            restaurant.setImage(resultSet.getString(6));
+            restaurant.setDesc(resultSet.getString(7));
             restaurants.add(restaurant);
         }
 
@@ -232,5 +231,51 @@ public class RestaurantDataAdapter {
             order.setOrderItems(items);
         }
         return orders;
+    }
+
+    public List<Restaurant> findRestaurantsByCuisine(String cuisine) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("select * from RESTAURANT where cuisine like ?");
+        preparedStatement.setString(1, "%" + cuisine + "%");
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        List<Restaurant> restaurants = new ArrayList<>();
+
+        while (resultSet.next()) {
+            Restaurant restaurant = new Restaurant();
+            restaurant.setName(resultSet.getString(1));
+            restaurant.setAddress(resultSet.getString(2));
+            restaurant.setRestaurantId(resultSet.getInt(3));
+            restaurant.setRating(resultSet.getInt(4));
+            restaurant.setCuisine(resultSet.getString(5));
+//            restaurant.setImage(resultSet.getString(6));
+            restaurant.setDesc(resultSet.getString(7));
+            restaurants.add(restaurant);
+        }
+
+        return restaurants;
+    }
+
+    public List<Restaurant> findRestaurantsByRating(int rating) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("select * from RESTAURANT where rating = ?");
+        preparedStatement.setInt(1, rating);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        List<Restaurant> restaurants = new ArrayList<>();
+
+        while (resultSet.next()) {
+            Restaurant restaurant = new Restaurant();
+            restaurant.setName(resultSet.getString(1));
+            restaurant.setAddress(resultSet.getString(2));
+            restaurant.setRestaurantId(resultSet.getInt(3));
+            restaurant.setRating(resultSet.getInt(4));
+            restaurant.setCuisine(resultSet.getString(5));
+//            restaurant.setImage(resultSet.getString(6));
+            restaurant.setDesc(resultSet.getString(7));
+            restaurants.add(restaurant);
+        }
+
+        return restaurants;
     }
 }
