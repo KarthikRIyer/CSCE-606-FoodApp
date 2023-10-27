@@ -112,4 +112,9 @@ public class RestaurantService {
     public List<Restaurant> findRestaurantsByRating(int rating) throws SQLException {
         return restaurantDataAdapter.findRestaurantsByRating(rating);
     }
+
+    public Dish getDishDetails(int dishId) throws SQLException {
+        Dish dish = restaurantDataAdapter.findDishDetails(dishId);
+        return dish;
+    }
 }

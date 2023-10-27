@@ -16,6 +16,7 @@ import com.foodapp.service.RestaurantService;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 
 public class RestaurantController extends Controller {
 
@@ -93,6 +94,19 @@ public class RestaurantController extends Controller {
         String restaurantImg = restaurantService.getDishImage(dishId);
 
         return new HttpResponse(restaurantImg, 200);
+    }
+
+    @GET(path = "/dishDetails")
+    public HttpResponse dishDetails(@RequestParam("dishId") String dishId,
+                                  @RequestParam("userId") String userId,
+                                  @RequestParam("token") String token) throws JsonProcessingException, SQLException {
+        loginService.validateToken(userId, token);
+
+        Dish dish = restaurantService.getDishDetails(Integer.parseInt(dishId));
+        if (Objects.isNull(dish)) {
+            throw new RuntimeException("Unable to find dish details");
+        }
+        return new HttpResponse(JsonUtil.toJson(dish), 200);
     }
 
     @POST(path = "/createOrder")

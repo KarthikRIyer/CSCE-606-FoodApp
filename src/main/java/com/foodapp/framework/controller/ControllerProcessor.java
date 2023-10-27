@@ -149,6 +149,8 @@ public class ControllerProcessor {
     private void handleException(Throwable e, HttpExchange exchange) throws IOException {
         e.printStackTrace();
         HttpResponse response = new HttpResponse(e.getMessage(), 500);
+        exchange.getResponseHeaders()
+                .set("Access-Control-Allow-Origin", "null");
         String responseText = Optional.ofNullable(response.responseText).orElse("");
         exchange.sendResponseHeaders(response.responseCode, responseText.getBytes().length);
         OutputStream outputStream = exchange.getResponseBody();
@@ -162,6 +164,8 @@ public class ControllerProcessor {
         exchange.getResponseHeaders()
                 .set(Constants.CONTENT_TYPE, Optional.ofNullable(contentType)
                         .orElse(Constants.APPLICATION_JSON));
+        exchange.getResponseHeaders()
+                .set("Access-Control-Allow-Origin", "null");
         exchange.sendResponseHeaders(response.responseCode, responseText.getBytes().length);
         OutputStream outputStream = exchange.getResponseBody();
         outputStream.write(responseText.getBytes());

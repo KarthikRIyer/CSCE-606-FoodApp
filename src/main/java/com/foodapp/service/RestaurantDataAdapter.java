@@ -278,4 +278,20 @@ public class RestaurantDataAdapter {
 
         return restaurants;
     }
+
+    public Dish findDishDetails(int dishId) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("select * from MENU where dish_id = ?");
+        preparedStatement.setInt(1, dishId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()) {
+            Dish dish = new Dish();
+            dish.setName(resultSet.getString(1));
+            dish.setDescription(resultSet.getString(2));
+            dish.setPrice(resultSet.getDouble(3));
+            dish.setRestaurantId(resultSet.getInt(4));
+            dish.setDishId(resultSet.getInt(5));
+            return dish;
+        }
+        return null;
+    }
 }
