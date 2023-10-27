@@ -117,4 +117,12 @@ public class RestaurantService {
         Dish dish = restaurantDataAdapter.findDishDetails(dishId);
         return dish;
     }
+
+    public Restaurant findRestaurantsById(int restaurantId) throws SQLException {
+        Restaurant restaurant = restaurantDataAdapter.findRestaurantById(restaurantId);
+        if (Objects.isNull(restaurant)) {
+            throw new RuntimeException("Unable to find Restaurant!");
+        }
+        return restaurant;
+    }
 }

@@ -294,4 +294,25 @@ public class RestaurantDataAdapter {
         }
         return null;
     }
+
+    public Restaurant findRestaurantById(int restaurantId) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("select * from RESTAURANT where restaurant_id = ?");
+        preparedStatement.setInt(1, restaurantId);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        if (resultSet.next()) {
+            Restaurant restaurant = new Restaurant();
+            restaurant.setName(resultSet.getString(1));
+            restaurant.setAddress(resultSet.getString(2));
+            restaurant.setRestaurantId(resultSet.getInt(3));
+            restaurant.setRating(resultSet.getInt(4));
+            restaurant.setCuisine(resultSet.getString(5));
+//            restaurant.setImage(resultSet.getString(6));
+            restaurant.setDesc(resultSet.getString(7));
+            return restaurant;
+        }
+
+        return null;
+    }
 }

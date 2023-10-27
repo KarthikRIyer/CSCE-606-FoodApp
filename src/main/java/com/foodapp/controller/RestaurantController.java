@@ -41,6 +41,17 @@ public class RestaurantController extends Controller {
         return new HttpResponse(JsonUtil.toJson(restaurants), 200);
     }
 
+    @GET(path = "/searchRestaurantById")
+    public HttpResponse searchRestaurantById(@RequestParam(value = "restaurantId") String restaurantId,
+                                               @RequestParam("userId") String userId,
+                                               @RequestParam("token") String token) throws JsonProcessingException, SQLException {
+        loginService.validateToken(userId, token);
+
+        Restaurant restaurant = restaurantService.findRestaurantsById(Integer.parseInt(restaurantId));
+
+        return new HttpResponse(JsonUtil.toJson(restaurant), 200);
+    }
+
     @GET(path = "/searchRestaurantByCuisine")
     public HttpResponse searchRestaurantByCuisine(@RequestParam(value = "cuisine") String cuisine,
                                          @RequestParam("userId") String userId,
