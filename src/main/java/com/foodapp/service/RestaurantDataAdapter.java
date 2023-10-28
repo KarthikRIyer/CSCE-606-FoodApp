@@ -315,4 +315,22 @@ public class RestaurantDataAdapter {
 
         return null;
     }
+
+    public int getRestaurantId(int orderId) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("select restaurant_id from ORDERS where order_id = ?");
+        preparedStatement.setInt(1, orderId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()) {
+            return resultSet.getInt(1);
+        }
+        throw new RuntimeException("Unable to get restaurantId");
+    }
+
+    public void updateOrderPhoneNo(int orderId, String phoneNumber) throws SQLException {
+        PreparedStatement updateStatement = connection.prepareStatement("update ORDERS set phone_no=? where order_id = ?");
+        updateStatement.setString(1, phoneNumber);
+        updateStatement.setInt(2, orderId);
+        int result = updateStatement.executeUpdate();
+        if (result == 0) throw new RuntimeException("Unable to update phone no!");
+    }
 }

@@ -14,6 +14,8 @@ import com.foodapp.service.LoginService;
 import com.foodapp.service.PaymentService;
 import com.foodapp.service.RestaurantService;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
@@ -136,20 +138,20 @@ public class RestaurantController extends Controller {
     @POST(path = "/payOrder")
     public HttpResponse payOrder(@RequestBody String paymentRequestStr,
                                     @RequestParam("userId") String userId,
-                                    @RequestParam("token") String token) throws JsonProcessingException, SQLException {
+                                    @RequestParam("token") String token) throws IOException, SQLException, URISyntaxException, InterruptedException {
         loginService.validateToken(userId, token);
 
         PaymentRequest paymentRequest = JsonUtil.fromJson(paymentRequestStr, PaymentRequest.class);
-        boolean processed = paymentService.processPayment(paymentRequest);
+        TxnResponse txnResponse = paymentService.processPayment(paymentRequest);
 
-        if (!processed) {
-            throw new RuntimeException("Could not process payment");
-        }
+//        if (!processed) {
+//            throw new RuntimeException("Could not process payment");
+//        }
 
         restaurantService.updateOrderAddress(paymentRequest.getOrderId(), paymentRequest.getAddress());
         restaurantService.updateOrderStatus(paymentRequest.getOrderId(), OrderStatus.CONFIRMED);
 
-        return new HttpResponse("Payment processed. Order confirmed!", 200);
+        return new HttpResponse(JsonUtil.toJson(txnResponse), 200);
     }
 
     @POST(path = "/createDish")

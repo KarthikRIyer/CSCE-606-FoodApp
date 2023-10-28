@@ -12,6 +12,16 @@ public class PaymentRequest {
     private String toMM;
     private String toYYYY;
 
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
+    private double amount;
+
     public int getOrderId() {
         return orderId;
     }

@@ -61,7 +61,7 @@ public class Application {
         loginService = new LoginService(loginDataAdapter);
         restaurantDataAdapter = new RestaurantDataAdapter(connection);
         restaurantService = new RestaurantService(restaurantDataAdapter);
-        paymentService = new PaymentService();
+        paymentService = new PaymentService(restaurantDataAdapter);
         customerDataAdapter = new CustomerDataAdapter(connection);
         customerService = new CustomerService(customerDataAdapter);
         customerController = new CustomerController(customerService, loginService);
