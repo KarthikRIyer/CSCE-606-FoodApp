@@ -28,6 +28,10 @@ public class WebServer {
         httpServer.start();
     }
 
+    public InetSocketAddress getAddress() {
+        return httpServer.getAddress();
+    }
+
     public int getPort() {
         return port;
     }

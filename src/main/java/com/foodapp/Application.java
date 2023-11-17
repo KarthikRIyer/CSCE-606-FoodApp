@@ -5,10 +5,13 @@ import com.foodapp.controller.LoginController;
 import com.foodapp.controller.RestaurantController;
 import com.foodapp.framework.controller.Controller;
 import com.foodapp.framework.controller.ControllerProcessor;
+import com.foodapp.framework.http.WebClient;
+import com.foodapp.framework.registry.RegistryClient;
 import com.foodapp.framework.webserver.WebServer;
 import com.foodapp.service.*;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -20,13 +23,19 @@ import java.util.logging.Logger;
 
 public class Application {
     private static final Logger logger = Logger.getLogger(Application.class.getName());
-
+    private static final String serviceName = "FOOD_APP";
     private static Application instance;
 
     private Connection connection;
     private WebServer webServer;
     private ControllerProcessor controllerProcessor;
     private String url = "jdbc:sqlite:FoodApp.db";
+
+    private String serviceRegistryURL = "http://localhost:8081";
+    private RegistryClient registryClient;
+    private InetSocketAddress address;
+
+    private WebClient webClient;
 
     private LoginController loginController;
     private LoginDataAdapter loginDataAdapter;
@@ -55,17 +64,20 @@ public class Application {
         Map<String, String> argsKeyVal = parseArgs(args);
         Integer port = Optional.ofNullable(argsKeyVal.get("port")).map(Integer::parseInt).orElse(null);
         webServer = new WebServer(port);
-
+        address = webServer.getAddress();
         connection = DriverManager.getConnection(url);
+
+        registryClient = new RegistryClient(serviceRegistryURL, serviceName, address.toString());
+        webClient = new WebClient(registryClient);
+
         loginDataAdapter = new LoginDataAdapter(connection);
         loginService = new LoginService(loginDataAdapter);
         restaurantDataAdapter = new RestaurantDataAdapter(connection);
         restaurantService = new RestaurantService(restaurantDataAdapter);
-        paymentService = new PaymentService(restaurantDataAdapter);
+        paymentService = new PaymentService(restaurantDataAdapter, webClient);
         customerDataAdapter = new CustomerDataAdapter(connection);
         customerService = new CustomerService(customerDataAdapter);
         customerController = new CustomerController(customerService, loginService);
-
 
         controllerProcessor = new ControllerProcessor(webServer);
 

@@ -1,6 +1,7 @@
 package com.foodapp.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.foodapp.framework.http.WebClient;
 import com.foodapp.framework.util.JsonUtil;
 import com.foodapp.model.PaymentRequest;
 import com.foodapp.model.TxnDetails;
@@ -19,11 +20,13 @@ import java.util.Objects;
 
 public class PaymentService {
 
-    private String paymentServiceURL = "http://localhost:8080";
+    private String paymentServiceURL = "http://PAYMENT_SERVICE";
     private RestaurantDataAdapter restaurantDataAdapter;
+    private WebClient webClient;
 
-    public PaymentService(RestaurantDataAdapter restaurantDataAdapter) {
+    public PaymentService(RestaurantDataAdapter restaurantDataAdapter, WebClient webClient) {
         this.restaurantDataAdapter = restaurantDataAdapter;
+        this.webClient = webClient;
     }
 
     public TxnResponse processPayment(PaymentRequest paymentRequest) throws SQLException, URISyntaxException, IOException, InterruptedException {
@@ -37,10 +40,11 @@ public class PaymentService {
         txnDetails.setOrderId(paymentRequest.getOrderId());
 
         String url = paymentServiceURL + "/postTxn";
-        URI targetURI = new URI(url);
-        HttpRequest httpRequest = HttpRequest.newBuilder().uri(targetURI).POST(HttpRequest.BodyPublishers.ofString(JsonUtil.toJson(txnDetails))).build();
-        HttpClient httpClient = HttpClient.newHttpClient();
-        HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = webClient.postLoadBalanced(url, JsonUtil.toJson(txnDetails));
+//        URI targetURI = new URI(url);
+//        HttpRequest httpRequest = HttpRequest.newBuilder().uri(targetURI).POST(HttpRequest.BodyPublishers.ofString(JsonUtil.toJson(txnDetails))).build();
+//        HttpClient httpClient = HttpClient.newHttpClient();
+//        HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
         TxnResponse txnResponse = JsonUtil.fromJson(response.body(), TxnResponse.class);
         return txnResponse;
     }
