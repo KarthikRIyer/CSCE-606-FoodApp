@@ -15,10 +15,7 @@ import java.net.InetSocketAddress;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class Application {
@@ -29,7 +26,10 @@ public class Application {
     private Connection connection;
     private WebServer webServer;
     private ControllerProcessor controllerProcessor;
-    private String url = "jdbc:sqlite:FoodApp.db";
+//    private String url = "jdbc:sqlite:FoodApp.db";
+    private String url = "jdbc:postgresql://suleiman.db.elephantsql.com/tskwxkur";
+//    tskwxkur:6uvQBpTnViwS1-8dPTGinL-0ys4AlXrr
+    private Properties props = new Properties();
 
     private String serviceRegistryURL = "http://localhost:8081";
     private RegistryClient registryClient;
@@ -65,7 +65,10 @@ public class Application {
         Integer port = Optional.ofNullable(argsKeyVal.get("port")).map(Integer::parseInt).orElse(null);
         webServer = new WebServer(port);
         address = webServer.getAddress();
-        connection = DriverManager.getConnection(url);
+        props.setProperty("user", "tskwxkur");
+        props.setProperty("password", "6uvQBpTnViwS1-8dPTGinL-0ys4AlXrr");
+        props.setProperty("currentSchema", "public");
+        connection = DriverManager.getConnection(url, props);
 
         registryClient = new RegistryClient(serviceRegistryURL, serviceName, address.toString());
         webClient = new WebClient(registryClient);

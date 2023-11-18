@@ -88,31 +88,27 @@ public class RestaurantDataAdapter {
 
     public Order saveOrder(Order order) throws SQLException {
         connection.setAutoCommit(false);
-        PreparedStatement saveStatement = connection.prepareStatement("insert into ORDERS (restaurant_id, customer_id, delivery_agent_id, address, status, total_cost) values (?,?,?,?,?,?)");
+        PreparedStatement saveStatement = connection.prepareStatement("insert into ORDERS (restaurant_id, customer_id, delivery_agent_id, address, status, total_cost) values (?,?,?,?,?,?) RETURNING order_id");
         saveStatement.setInt(1, order.getRestaurantId());
         saveStatement.setInt(2, order.getCustomerId());
         saveStatement.setObject(3, order.getDeliveryAgentId());
         saveStatement.setString(4, order.getAddress());
         saveStatement.setString(5, order.getOrderStatus().toString());
         saveStatement.setDouble(6, order.getTotalCost());
-        int result = saveStatement.executeUpdate();
+        ResultSet resultSet = saveStatement.executeQuery();
 
-        if (result == 0) {
-            connection.rollback();
-            throw new RuntimeException("Unable to create order!");
-        }
+//        if (!resultSet.rowInserted()) {
+//            connection.rollback();
+//            throw new RuntimeException("Unable to create order!");
+//        }
 
-        Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("select last_insert_rowid()");
-        Integer orderId = null;
-        if (resultSet.next()) {
+        int orderId;
+        if (resultSet != null && resultSet.next()) {
             orderId = resultSet.getInt(1);
+            order.setOrderId(orderId);
+        } else {
+            throw new RuntimeException("Could not get order id");
         }
-        if (Objects.isNull(orderId)) {
-            connection.rollback();
-            throw new RuntimeException("Unable to create order!");
-        }
-        order.setOrderId(orderId);
 
         PreparedStatement saveOrderItemStatement = connection.prepareStatement("insert into ORDER_ITEMS (order_id, dish_id, qty) values (?, ?, ?)");
 
@@ -120,7 +116,7 @@ public class RestaurantDataAdapter {
             saveOrderItemStatement.setInt(1, orderId);
             saveOrderItemStatement.setInt(2, orderItem.getDishId());
             saveOrderItemStatement.setInt(3, orderItem.getQuantity());
-            result = saveOrderItemStatement.executeUpdate();
+            int result = saveOrderItemStatement.executeUpdate();
             if (result == 0) {
                 connection.rollback();
                 throw new RuntimeException("Unable to create order!");

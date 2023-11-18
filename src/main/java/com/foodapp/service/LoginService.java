@@ -34,7 +34,7 @@ public class LoginService {
         } catch (NumberFormatException e) {
             throw new RuntimeException("Invalid user id format!");
         }
-        User user = loginDataAdapter.getUserWithToken(userId, token);
+        User user = loginDataAdapter.getUserWithToken(Integer.parseInt(userId), token);
         if (Objects.isNull(user)) {
             throw new RuntimeException("Token authentication failed!");
         }

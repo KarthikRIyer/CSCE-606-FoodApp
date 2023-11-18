@@ -18,7 +18,7 @@ public class LoginDataAdapter {
     }
 
     public User getUser(String username, String password) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("select * from USERS where username=? and password=?");
+        PreparedStatement preparedStatement = connection.prepareStatement("select * from Users where username=? and password=?");
         preparedStatement.setString(1, username);
         preparedStatement.setString(2, password);
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -37,9 +37,9 @@ public class LoginDataAdapter {
         return null;
     }
 
-    public User getUserWithToken(String userId, String token) throws SQLException {
+    public User getUserWithToken(int userId, String token) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("select * from USERS where user_id=? and token=?");
-        preparedStatement.setString(1, userId);
+        preparedStatement.setInt(1, userId);
         preparedStatement.setString(2, token);
         ResultSet resultSet = preparedStatement.executeQuery();
         if (resultSet.next()) {
