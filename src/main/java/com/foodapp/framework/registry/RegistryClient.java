@@ -70,7 +70,13 @@ public class RegistryClient {
 
     public String getServiceURL(String serviceName) {
         List<RegistryElement> urls = registryMap.get().get(serviceName);
-        if (Objects.isNull(urls) || urls.isEmpty()) return null;
+        if (Objects.isNull(urls) || urls.isEmpty()) {
+            updateRegistry();
+            urls = registryMap.get().get(serviceName);
+            if (Objects.isNull(urls) || urls.isEmpty()) {
+                return null;
+            }
+        };
         return urls.get(random.nextInt(urls.size())).url;
     }
 

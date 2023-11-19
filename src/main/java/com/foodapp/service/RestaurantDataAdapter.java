@@ -66,9 +66,9 @@ public class RestaurantDataAdapter {
         return dishes;
     }
 
-    public String findDishImage(String dishId) throws SQLException {
+    public String findDishImage(int dishId) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("select image from MENU where dish_id = ?");
-        preparedStatement.setString(1, dishId);
+        preparedStatement.setInt(1, dishId);
         ResultSet resultSet = preparedStatement.executeQuery();
         if (resultSet.next()) {
             return resultSet.getString(1);
@@ -145,7 +145,7 @@ public class RestaurantDataAdapter {
     }
 
     public void createDish(CreateDishRequest createDishRequest) throws SQLException {
-        PreparedStatement createDishStatement = connection.prepareStatement("insert into MENU (dish, desc, price, restaurant_id, image) values (?, ?, ?, ?, ?)");
+        PreparedStatement createDishStatement = connection.prepareStatement("insert into MENU (dish, descr, price, restaurant_id, image) values (?, ?, ?, ?, ?)");
         createDishStatement.setString(1, createDishRequest.getDishName());
         createDishStatement.setString(2, createDishRequest.getDishDesc());
         createDishStatement.setDouble(3, createDishRequest.getDishPrice());
