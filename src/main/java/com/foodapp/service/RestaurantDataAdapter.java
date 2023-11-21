@@ -39,9 +39,9 @@ public class RestaurantDataAdapter {
         return restaurants;
     }
 
-    public String findRestaurantImage(String restaurantId) throws SQLException {
+    public String findRestaurantImage(int restaurantId) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("select image from RESTAURANT where restaurant_id = ?");
-        preparedStatement.setString(1, restaurantId);
+        preparedStatement.setInt(1, restaurantId);
         ResultSet resultSet = preparedStatement.executeQuery();
         if (resultSet.next()) {
             return resultSet.getString(1);

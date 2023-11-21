@@ -21,7 +21,7 @@ public class RestaurantService {
     }
 
     public String getRestaurantImage(String restaurantId) throws SQLException {
-        String img = restaurantDataAdapter.findRestaurantImage(restaurantId);
+        String img = restaurantDataAdapter.findRestaurantImage(Integer.parseInt(restaurantId));
         if (Objects.isNull(img)) {
             throw new RuntimeException("Unable to find image!");
         }
