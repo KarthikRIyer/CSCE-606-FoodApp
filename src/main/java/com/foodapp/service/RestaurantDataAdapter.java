@@ -3,10 +3,12 @@ package com.foodapp.service;
 import com.foodapp.model.*;
 import com.foodapp.model.enums.OrderStatus;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class RestaurantDataAdapter {
 
@@ -304,7 +306,7 @@ public class RestaurantDataAdapter {
             restaurant.setRestaurantId(resultSet.getInt(3));
             restaurant.setRating(resultSet.getInt(4));
             restaurant.setCuisine(resultSet.getString(5));
-//            restaurant.setImage(resultSet.getString(6));
+            restaurant.setImage(resultSet.getString(6));
             restaurant.setDesc(resultSet.getString(7));
             return restaurant;
         }
