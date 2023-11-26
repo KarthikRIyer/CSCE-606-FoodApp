@@ -61,6 +61,7 @@ public class RegistryClient {
             HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
             String json = response.body();
             json = json.replace("\\n", "");
+            json = json.replace("\\r", "");
             json = json.replace("\\\"", "\"");
             registryMap.set(JsonUtil.registryMapfromJson(json.substring(1, json.length()-1)));
         } catch (Exception e) {
